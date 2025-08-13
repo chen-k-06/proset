@@ -2,6 +2,10 @@ let cards = []
 const numDots = 6;
 const numCards = 7;
 
+document.addEventListener("DOMContentLoaded", function () {
+    generateInitalCards();
+});
+
 /**
  * Populates the global `cards` array with `numCards` random binary arrays.
  *
