@@ -1,0 +1,33 @@
+body {
+    margin: 15px;
+}
+
+button {
+    margin: 8px;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+#footer {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#footer button {
+    margin: 5px;
+}
+
+.card {
+    margin: 5px;
+    width: 25%;
+    border-radius: 5px;
+    background-color: white;
+    aspect-ratio: 3/4;
+    display: grid;
+    place-items: center;
+    padding: 12px;
+}
+
+.selected {
+    background-color: gray;
+}
