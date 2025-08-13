@@ -8,21 +8,21 @@ button {
     font-size: 1em;
 }
 
-#footer {
+#card-container {
+    width: 75%;
     display: flex;
-    justify-content: flex-start;
-}
-
-#footer button {
-    margin: 5px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
 .card {
     margin: 5px;
-    width: 25%;
+    width: 18%;
+    aspect-ratio: 3/4;
+    border: 3px solid black;
     border-radius: 5px;
     background-color: white;
-    aspect-ratio: 3/4;
     display: grid;
     place-items: center;
     padding: 12px;
@@ -30,4 +30,13 @@ button {
 
 .selected {
     background-color: gray;
+}
+
+#footer {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#footer button {
+    margin: 5px;
 }
