@@ -2,6 +2,7 @@ let cards = []
 let cardDivs = []
 const numDots = 6;
 const numCards = 7;
+const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 document.addEventListener("DOMContentLoaded", function () {
     generateInitalCards();
@@ -46,7 +47,7 @@ function generateInitalCards() {
         while (cardsOverlap(cards, card) == true) {
             card = generateRandomCard();
         }
-        cards.push(card)
+        cards.push(card);
     }
     console.log(`Inital cards:`);
     console.table(cards);
@@ -56,6 +57,32 @@ function generateInitalCards() {
     for (let i = 0; i < numCards; i++) {
         let newCard = document.createElement("div");
         newCard.classList.add("card");
+
+        // color the dots
+        for (let j = 0; j < numDots / 2; j++) {
+            let newDotBar = document.createElement("div");
+            newDotBar.classList.add("dot-bar");
+            newCard.appendChild(newDotBar);
+
+            for (let k = 0; k < 2; k++) {
+                let newDot = document.createElement("div");
+                newDot.classList.add("dot");
+
+                if (k == 0) {
+                    newDot.classList.add("left-dot");
+                }
+                else {
+                    newDot.classList.add("right-dot");
+                }
+                if (cards[i][j * 2 + k] == 1) {
+                    newDot.classList.add(colors[j * 2 + k]);
+                }
+                else {
+                    newDot.classList.add("clear");
+                }
+                newDotBar.appendChild(newDot);
+            }
+        }
         let parentElement = document.getElementById("card-container");
         parentElement.appendChild(newCard);
         cardDivs.push(newCard);
