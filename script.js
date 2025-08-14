@@ -149,8 +149,8 @@ function checkProset() {
     let isProset = isValidProset(this_proset);
     console.log("Result: ", isProset);
     if (isProset) {
-        scoreTracker.textContent =
-            feedbackDiv.textContent = "Correct!";
+        scoreTracker.textContent = Number(scoreTracker.textContent) + Number(this_proset.length);
+        feedbackDiv.textContent = "Correct!";
         // remove the selected cards and add new ones
         updateCards(this_proset);
     }
@@ -186,7 +186,6 @@ function isValidProset(proset) {
     // sum all dots across all cards
     for (let i = 0; i < proset.length; i++) {
         let this_card = cards[proset[i]];
-        console.log(`this card is ${this_card}`)
         // j is the color -> index in counts
         for (let j = 0; j < numDots; j++) {
             if (this_card[j] == 1) {
