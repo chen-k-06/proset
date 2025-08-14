@@ -5,26 +5,28 @@ let score = 0;
 const feedbackDiv = document.getElementById("feedback");
 const submitButton = document.getElementById("submit");
 const scoreTracker = document.getElementById("score-value");
+const cardContainer = document.getElementById("card-container");
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 document.addEventListener("DOMContentLoaded", function () {
     generateInitalCards();
-    cardDivs = document.querySelectorAll(".card");
 
-    cardDivs.forEach((card, index) => {
-        card.addEventListener("click", () => {
-            console.log(index + ' card clicked');
-            if (card.classList.contains("selected")) {
-                card.classList.remove("selected");
-                selected.delete(index);
-            }
-            else {
-                card.classList.add("selected");
-                selected.add(index);
-            }
-        });
+    cardContainer.addEventListener("click", (event) => {
+        const card = event.target.closest(".card");
+        if (!card || !cardContainer.contains(card)) return;
+
+        const index = [...cardContainer.children].indexOf(card);
+        console.log(index + ' card clicked');
+        if (card.classList.contains("selected")) {
+            card.classList.remove("selected");
+            selected.delete(index);
+        }
+        else {
+            card.classList.add("selected");
+            selected.add(index);
+        }
     });
 });
 
@@ -111,6 +113,8 @@ function createNewCardDiv(index) {
     }
     let parentElement = document.getElementById("card-container");
     parentElement.appendChild(newCard);
+
+    return newCard;
 }
 
 function cardsOverlap(a, b) {
@@ -203,42 +207,21 @@ function giveHint() {
 }
 
 function updateCards(previous) {
-    // update the previous cards with new parity arrays
-    for (let i = 0; i < previous.length; i++) {
-        let card = generateRandomCard();
-        cards[previous[i]] = card;
+    const container = document.getElementById("card-container");
+    let indexes = [...previous].sort((a, b) => a - b);
+
+    for (let i of indexes) {
+        cards[i] = generateRandomCard();
+
+        const replacement = createNewCardDiv(i);
+        const old = container.children[i];
+        container.replaceChild(replacement, old);
     }
 
-    // creates new cards
-    for (let index in previous) {
-        createNewCardDiv(index);
-    }
-
-    selectedCardDivs = Array.from(document.querySelectorAll(".selected"));
-    // remove old cards
-    // to do: preserve order of old cards
-    for (let i = 0; i < selectedCardDivs.length; i++) {
-        selectedCardDivs[i].remove();
-    }
-    selected = [];
+    selected.clear();
 
     console.log(`Updated cards array: ${cards}`)
     cardDivs = document.querySelectorAll(".card");
-
-    // re install listener
-    cardDivs.forEach((card, index) => {
-        card.addEventListener("click", () => {
-            console.log(index + ' card clicked');
-            if (card.classList.contains("selected")) {
-                card.classList.remove("selected");
-                selected.delete(index);
-            }
-            else {
-                card.classList.add("selected");
-                selected.add(index);
-            }
-        });
-    });
 }
 
 function showHelper() {
