@@ -14,6 +14,20 @@ const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
+/**
+ * On page load, populates 
+ *
+ * Each generated card is an array of length `numDots`, containing 0s and 1s:
+ * - 0 means no dot at that position.
+ * - 1 means a dot is present.
+ *
+ * Relies on the global variables:
+ * - `numCards` (number of cards to generate)
+ * - `numDots` (number of positions in each card)
+ * - `cards` (array that will be populated)
+ *
+ * @returns {void}
+ */
 document.addEventListener("DOMContentLoaded", function () {
     generateInitalCards();
     cardDivs = document.querySelectorAll(".card");
@@ -68,14 +82,9 @@ function generateInitalCards() {
 }
 
 /**
-* Generates a random binary array representing the presence or absence of dots.
-* Guarentees the array is not already present in global var `cards`
-*
-* The array length is determined by the global `numDots` variable. 
-* A value of 0 means no dot at that position, and a value of 1 means a dot is present.
-*
-* @returns {number[]} An array of 0s and 1s of length `numDots`.
-*/
+ * Generate a random 6-bit card as an array of 0/1, rejecting duplicates and all-zero.
+ * @returns {number[]} e.g., [1,0,1,0,1,0]
+ */
 function generateRandomCard() {
     let card = [];
     do {
@@ -90,6 +99,12 @@ function generateRandomCard() {
     return card;
 }
 
+/**
+ * Create a single `.card` element for `cards[index]` and append to #card-container.
+ * Each of the 6 positions maps to one of: red, orange, yellow, green, blue, purple.
+ * @param {number} index - Index into `cards`.
+ * @returns {HTMLDivElement} The appended card element.
+ */
 function createNewCardDiv(index) {
     let newCard = document.createElement("div");
     newCard.classList.add("card");
@@ -119,6 +134,12 @@ function createNewCardDiv(index) {
     return newCard;
 }
 
+/**
+ * Check if `b` already exists in array `a` (deep equality on 0/1 arrays).
+ * @param {number[][]} a
+ * @param {number[]} b
+ * @returns {boolean}
+ */
 function cardsOverlap(a, b) {
     // a is an array of cards
     // b is one card, that needs to be checked against each card in a
@@ -140,6 +161,15 @@ function cardsOverlap(a, b) {
     return false;
 }
 
+
+/**
+ * Strictly compares two arrays (same length, same order, elements with `===`).
+ * Note: for primitives; `NaN` !== `NaN` under `===`.
+ * @param {any[]} a
+ * @param {any[]} b
+ * @returns {boolean} True if equal, else false.
+ * @example arraysEqual([1,2,3], [1,2,3]); // true
+ */
 function arraysEqual(a, b) {
     if (a === b) return true;
     if (!a || !b || a.length !== b.length) return false;
@@ -154,6 +184,23 @@ submitButton.addEventListener(("click"), () => {
     checkProset();
 });
 
+/**
+ * Validates the currently selected cards as a Proset and updates UI/game state.
+ *
+ * If valid:
+ *    - Increment the score by the size of the selected subset.
+ *    - Show "Correct!" feedback.
+ *    - Replace those cards in place via `updateCards(proset)`.
+ * 4) If invalid: show "Try again :(" feedback.
+ * 5) Clear the feedback message after 1500 ms.
+ *
+ * - Mutates DOM (`scoreTracker.textContent`, `feedbackDiv.textContent`).
+ * - Triggers card replacement and selection reset indirectly via `updateCards`.
+ *
+ * @returns {void}
+ * @see isValidProset
+ * @see updateCards
+ */
 function checkProset() {
     let this_proset = Array.from(selected);
     console.log(`Selected proset: ${this_proset}`);
@@ -175,25 +222,9 @@ function checkProset() {
 }
 
 /**
- * Checks whether the selected cards form a valid Proset.
- *
- * A Proset is a non-empty subset of cards such that, for each dot/color position,
- * the total number of present dots across the selection is even (parity ≡ 0 mod 2).
- *
- * @param {number[]} proset - Indices of selected cards in the global `cards` array.
- * @returns {boolean} True if every dot/color has even parity; otherwise, false.
- *
- * @example
- * // Suppose cards = [
- * //   [1,0,1,0,0,0],
- * //   [1,1,0,0,0,0],
- * //   [0,1,1,0,0,0]
- * // ];
- * // Each color appears 0 or 2 times across indices [0,1,2]:
- * isValidProset([0, 1, 2]); // → true
- *
- * // Empty selection is not a Proset:
- * isValidProset([]); // → false
+ * True if `proset` is non-empty and every color's parity is even.
+ * @param {number[]} proset - indices into `cards`
+ * @returns {boolean}
  */
 function isValidProset(proset) {
     if (!proset || proset.length === 0) return false;
@@ -207,6 +238,11 @@ function isValidProset(proset) {
     return true;
 }
 
+/**
+ * Compute per-color parity (sum mod 2) for a selected subset.
+ * @param {number[]} proset - indices into `cards`
+ * @returns {number[]} length-6 array of 0/1 (0=even, 1=odd)
+ */
 function getParity(proset) {
     let parity = Array(numDots).fill(0);
     // sum all dots across all cards
@@ -220,6 +256,11 @@ function getParity(proset) {
     return parity;
 }
 
+/**
+ * Replace each selected index with a fresh random card and swap its DOM node in place.
+ * Preserves the ordering of non-selected cards.
+ * @param {number[]} previous - indices to replace
+ */
 function updateCards(previous) {
     const container = document.getElementById("card-container");
     let indexes = [...previous].sort((a, b) => a - b);
@@ -244,6 +285,10 @@ cheatButton.addEventListener(("click"), () => {
     displaySolution();
 });
 
+/**
+ * Show a valid solution visually: clear selection, select solution indices,
+ * and update the guide card accordingly.
+ */
 function displaySolution() {
     let answer = getAProset(); // calls isValidProset, which calls getParity,
     // which uses global cards var
@@ -268,12 +313,11 @@ function displaySolution() {
     updateHelper(answer);
 }
 
-/*
-* Returns the indexes of a valid proset on the board, 
-* given the current cards. If no valid proset, returns []
-*
-* 
-*/
+/**
+ * Find any valid proset on the current board.
+ * Searches combinations of size 1..numCards, returns the first valid combo (indices).
+ * @returns {number[]} indices or []
+ */
 function getAProset() {
     // check increasingly large combinations of cards until 1 is a proset
     let idxs = [0, 1, 2, 3, 4, 5, 6];
@@ -292,6 +336,13 @@ function getAProset() {
     return [];
 }
 
+/**
+ * Build all k-combinations from `array`. Current implementation returns strings,
+ * then caller splits them; prefer returning arrays of numbers.
+ * @param {number[]} array
+ * @param {number} amt
+ * @returns {Array<string>|Array<number[]>}
+ */
 function getCombinations(array, amt) {
     const arr = Array.from(array), n = arr.length;
 
@@ -332,6 +383,11 @@ guideToggle.addEventListener(("click"), () => {
     }
 });
 
+/**
+ * Update the "guide card" visualization.
+ * Colored dot = odd parity remaining (needs one more of that color); clear = even.
+ * @param {Set<number>|number[]} selected - selected indices
+ */
 function updateHelper(selected) {
     let this_proset = Array.from(selected);
     let parity = getParity(this_proset);
