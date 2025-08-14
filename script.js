@@ -322,13 +322,21 @@ function getAProset() {
         let combos = getCombinations(idxs, i);
 
         for (let j = 0; j < combos.length; j++) {
-            combo = Array.from(combos[j]);
+            let combo = Array.from(combos[j]);
             let result = isValidProset(combo);
             if (result) {
                 console.log(`Solution found ${combo}`);
                 return combo;
             }
         }
+    }
+
+    // check the subset of all the cards
+    let combo = idxs;
+    let result = isValidProset(combo);
+    if (result) {
+        console.log(`Solution found ${combo}`);
+        return combo;
     }
     return [];
 }
