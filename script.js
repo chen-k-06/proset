@@ -33,9 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
             selected.add(index);
         }
 
-        if (guideToggle) {
-            updateHelper(selected);
-        }
+        console.log(selected);
+        updateHelper(selected);
     });
 });
 
@@ -225,6 +224,7 @@ function updateCards(previous) {
     }
 
     selected.clear();
+    updateHelper(selected);
 
     console.log(`Updated cards array: ${cards}`)
     cardDivs = document.querySelectorAll(".card");
@@ -248,18 +248,15 @@ function displaySolution() {
         }
     }
 
+    selected.clear();
+
     // select all cards in answer
     for (let i = 0; i < answer.length; i++) {
-        // get the card div at index answer[i]
         let thisCardDiv = cardDivs[answer[i]];
-        console.log(cardDivs);
-
-        // select it
-        if (!thisCardDiv.classList.contains("selected")) {
-            thisCardDiv.classList.add("selected");
-        }
+        thisCardDiv.classList.add("selected");
+        selected.add(Number(answer[i]));
     }
-    selected = answer;
+    updateHelper(answer);
 }
 
 /*
