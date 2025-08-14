@@ -2,10 +2,13 @@ let cards = [];
 let cardDivs = [];
 let selected = new Set();
 let score = 0;
+let helperCard = document.getElementById("helper-card");
+let guideToggleValue = false;
 const feedbackDiv = document.getElementById("feedback");
 const submitButton = document.getElementById("submit");
 const scoreTracker = document.getElementById("score-value");
 const cardContainer = document.getElementById("card-container");
+const guideToggle = document.getElementById("helper");
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -26,6 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
         else {
             card.classList.add("selected");
             selected.add(index);
+        }
+
+        if (guideToggle) {
+            updateHelper(selected);
         }
     });
 });
@@ -96,12 +103,6 @@ function createNewCardDiv(index) {
             let newDot = document.createElement("div");
             newDot.classList.add("dot");
 
-            if (k == 0) {
-                newDot.classList.add("left-dot");
-            }
-            else {
-                newDot.classList.add("right-dot");
-            }
             if (cards[index][j * 2 + k] == 1) {
                 newDot.classList.add(colors[j * 2 + k]);
             }
@@ -186,23 +187,27 @@ function checkProset() {
  */
 function isValidProset(proset) {
     if (!proset || proset.length === 0) return false;
-    let counts = Array(numDots).fill(0);
+    let parity = getParity(proset);
+
+    for (let i = 0; i < parity.length; i++) {
+        if (parity[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getParity(proset) {
+    let parity = Array(numDots).fill(0);
     // sum all dots across all cards
     for (let i = 0; i < proset.length; i++) {
         let this_card = cards[proset[i]];
         // j is the color -> index in counts
         for (let j = 0; j < numDots; j++) {
-            if (this_card[j] == 1) {
-                counts[j]++;
-            }
+            parity[j] = (parity[j] + this_card[j]) % 2;
         }
     }
-    for (let i = 0; i < counts.length; i++) {
-        if (counts[i] % 2 != 0) {
-            return false;
-        }
-    }
-    return true;
+    return parity;
 }
 
 function updateCards(previous) {
@@ -225,4 +230,54 @@ function updateCards(previous) {
 
 function giveHint() {
     let answer = getAProset(cards);
+    for (let i = 0; i < answer.length; i++) {
+        // get the card div at index answer[i]
+
+        // select it
+    }
+}
+
+function getAProset(cards) {
+    // check increasingly large combinations of cards until 1 is a proset
+
+}
+
+guideToggle.addEventListener(("click"), () => {
+    guideToggleValue = !guideToggleValue;
+
+    if (guideToggleValue) {
+        console.log("Guide card actived")
+        helperCard.classList.remove("hidden");
+        updateHelper(selected);
+    }
+    else {
+        console.log("Guide card deactivated")
+        helperCard.classList.add("hidden");
+    }
+});
+
+function updateHelper(selected) {
+    let this_proset = Array.from(selected);
+    let parity = getParity(this_proset);
+    helperCard.replaceChildren();
+
+    // color the dots
+    for (let j = 0; j < numDots / 2; j++) {
+        let newDotBar = document.createElement("div");
+        newDotBar.classList.add("dot-bar");
+        helperCard.appendChild(newDotBar);
+
+        for (let k = 0; k < 2; k++) {
+            let newDot = document.createElement("div");
+            newDot.classList.add("dot");
+
+            if (parity[j * 2 + k] == 1) {
+                newDot.classList.add(colors[j * 2 + k]);
+            }
+            else {
+                newDot.classList.add("clear");
+            }
+            newDotBar.appendChild(newDot);
+        }
+    }
 }

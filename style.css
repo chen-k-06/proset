@@ -1,12 +1,29 @@
 body {
     margin: 15px;
     background-color: white;
+    font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+p {
+    font-size: 1em;
 }
 
 button {
     margin: 8px;
     border-radius: 5px;
     font-size: 1em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+}
+
+button:hover {
+    cursor: pointer;
+    transition: top ease 0.5s;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+}
+
+button:active {
+    transform: translateY(1px);
 }
 
 #card-container {
@@ -58,7 +75,7 @@ button {
 }
 
 .orange {
-    background-color: #e69138;
+    background-color: #db8427;
 }
 
 .yellow {
@@ -87,13 +104,44 @@ button {
     background-color: rgb(158, 158, 158);
 }
 
+#helper-card {
+    width: 10%;
+}
+
+.hidden {
+    display: none;
+}
+
 #footer {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    font-size: 1.2em;
+    margin-bottom: 1em;
 }
 
 #footer button {
-    margin: 10px;
-    padding: 5px
+    margin: 0.5em;
+}
+
+#footer p {
+    margin: 0.5em;
+}
+
+#footer label {
+    margin-left: 0.3em;
+}
+
+#score-box {
+    margin-right: 0;
+}
+
+#score-value {
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+#feedback {
+    margin-bottom: 0;
+    margin-left: 0.8em;
 }
