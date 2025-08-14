@@ -12,6 +12,8 @@ The guide botton will show you the XOR of the cards currently selected:
 
 <img width="445" height="601" alt="image" src="https://github.com/user-attachments/assets/112280f5-e73a-4f86-b009-85dcad3eed63" />
 
+
+
 The cheat button will select the smallest proset present: 
 
 <img width="460" height="560" alt="image" src="https://github.com/user-attachments/assets/6395af02-28c5-491d-a417-3d32ba425e41" />
