@@ -1,6 +1,8 @@
 let cards = [];
 let cardDivs = [];
 let selected = new Set();
+const feedbackDiv = document.getElementById("feedback");
+const submitButton = document.getElementById("submit");
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -8,8 +10,6 @@ const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 document.addEventListener("DOMContentLoaded", function () {
     generateInitalCards();
     cardDivs = document.querySelectorAll(".card");
-    console.log(`card divs: ${cardDivs}`)
-    console.log(cardDivs.length)
 
     cardDivs.forEach((card, index) => {
         card.addEventListener("click", () => {
@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
-
 });
 
 /**
@@ -129,8 +128,53 @@ function cardsOverlap(a, b) {
     return false;
 }
 
-function checkProset() {
+submitButton.addEventListener(("click"), () => {
+    console.log("Submit button clicked.");
+    checkProset();
+});
 
+function checkProset() {
+    let this_proset = Array.from(selected);
+    console.log("Selected proset: ", this_proset);
+    let isProset = isValidProset(this_proset);
+    console.log("Result: ", isProset);
+    if (isProset) {
+        feedbackDiv.textContent = "Correct!";
+    }
+    else {
+        feedbackDiv.textContent = "Try again :(";
+    }
+}
+
+/*
+*
+* For each card in a potential proset,
+* sums the number of times each dot is present. 
+* If any dot is present an odd number of times, returns false. 
+* Otherwise, returns true.
+* 
+* 
+* 
+*/
+function isValidProset(proset) {
+    let counts = Array(numDots).fill(0);
+    // sum all dots across all cards
+    for (let i = 0; i < proset.length; i++) {
+        let this_card = proset[i];
+
+        // j is the color -> index in counts
+        for (let j = 0; j < numDots; j++) {
+            if (this_card[j] == 1) {
+                counts[j]++;
+            }
+        }
+    }
+    for (let i = 0; i < counts.length; i++) {
+        if (counts[i] % 2 != 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function giveHint() {
