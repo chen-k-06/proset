@@ -15,17 +15,14 @@ const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 /**
- * On page load, populates 
- *
- * Each generated card is an array of length `numDots`, containing 0s and 1s:
- * - 0 means no dot at that position.
- * - 1 means a dot is present.
- *
- * Relies on the global variables:
- * - `numCards` (number of cards to generate)
- * - `numDots` (number of positions in each card)
- * - `cards` (array that will be populated)
- *
+ * Bootstraps the app on DOM ready: generates the initial cards and binds a
+ * delegated click handler on `#card-container`.
+ * Clicking a `.card` toggles its "selected" class, updates the `selected` Set
+ * with the card’s index, and calls `updateHelper(selected)`.
+ * Event delegation ensures newly replaced cards work without rebinding.
+ * Depends on globals: `cards`, `cardContainer`, `selected`,
+ * `generateInitalCards`, `updateHelper`.
+ * Side effects: mutates DOM, toggles classes, logs to console.
  * @returns {void}
  */
 document.addEventListener("DOMContentLoaded", function () {
