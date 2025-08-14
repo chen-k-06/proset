@@ -1,11 +1,30 @@
-let cards = []
-let cardDivs = []
+let cards = [];
+let cardDivs = [];
+let selected = new Set();
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 document.addEventListener("DOMContentLoaded", function () {
     generateInitalCards();
+    cardDivs = document.querySelectorAll(".card");
+    console.log(`card divs: ${cardDivs}`)
+    console.log(cardDivs.length)
+
+    cardDivs.forEach((card, index) => {
+        card.addEventListener("click", () => {
+            console.log(index + ' card clicked');
+            if (card.classList.contains("selected")) {
+                card.classList.remove("selected");
+                selected.delete(index);
+            }
+            else {
+                card.classList.add("selected");
+                selected.add(index);
+            }
+        });
+    });
+
 });
 
 /**
@@ -119,7 +138,7 @@ function giveHint() {
 }
 
 function updateCards() {
-
+    cardDivs = document.querySelectorAll(".card");
 }
 
 function showHelper() {

@@ -21,9 +21,8 @@ button {
     margin: 5px;
     width: 18%;
     aspect-ratio: 3/4;
-    border: 3px solid black;
+    border: 0.175em solid black;
     border-radius: 10px;
-    background-color: white;
     display: grid;
     place-items: center;
     padding: 12px;
@@ -45,7 +44,6 @@ button {
 .dot {
     aspect-ratio: 1;
     height: 25%;
-    border: 1px solid black;
     border-radius: 50%;
     display: inline-block;
     padding: 10%;
@@ -80,7 +78,10 @@ button {
 
 .clear {
     background-color: white;
-    border-color: white;
+}
+
+.selected .clear {
+    background-color: gray;
 }
 
 #footer {
