@@ -157,6 +157,10 @@ function checkProset() {
     else {
         feedbackDiv.textContent = "Try again :(";
     }
+
+    const t = setTimeout(() => {
+        feedbackDiv.textContent = '';
+    }, 1500);
 }
 
 /**
@@ -201,10 +205,6 @@ function isValidProset(proset) {
     return true;
 }
 
-function giveHint() {
-
-}
-
 function updateCards(previous) {
     const container = document.getElementById("card-container");
     let indexes = [...previous].sort((a, b) => a - b);
@@ -223,6 +223,6 @@ function updateCards(previous) {
     cardDivs = document.querySelectorAll(".card");
 }
 
-function showHelper() {
-
+function giveHint() {
+    let answer = getAProset(cards);
 }
