@@ -85,7 +85,7 @@ function generateRandomCard() {
             card.push(num);
         }
     }
-    while (cardsOverlap(cards, card) == true);
+    while (cardsOverlap(cards, card) == true || arraysEqual(card, [0, 0, 0, 0, 0, 0]));
     console.log(`Random card ${card} generated`)
     return card;
 }
@@ -138,6 +138,15 @@ function cardsOverlap(a, b) {
         }
     }
     return false;
+}
+
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (!a || !b || a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
 }
 
 submitButton.addEventListener(("click"), () => {
