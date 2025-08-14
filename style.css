@@ -116,12 +116,14 @@ button:active {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
     font-size: 1.2em;
     margin-bottom: 1em;
 }
 
 #footer button {
     margin: 0.5em;
+    padding: 0.3em;
 }
 
 #footer p {

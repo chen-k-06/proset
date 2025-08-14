@@ -9,12 +9,14 @@ const submitButton = document.getElementById("submit");
 const scoreTracker = document.getElementById("score-value");
 const cardContainer = document.getElementById("card-container");
 const guideToggle = document.getElementById("helper");
+const cheatButton = document.getElementById("hint");
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
 
 document.addEventListener("DOMContentLoaded", function () {
     generateInitalCards();
+    cardDivs = document.querySelectorAll(".card");
 
     cardContainer.addEventListener("click", (event) => {
         const card = event.target.closest(".card");
@@ -228,18 +230,86 @@ function updateCards(previous) {
     cardDivs = document.querySelectorAll(".card");
 }
 
-function giveHint() {
-    let answer = getAProset(cards);
+cheatButton.addEventListener(("click"), () => {
+    console.log("Cheat button pressed");
+    displaySolution();
+});
+
+function displaySolution() {
+    let answer = getAProset(); // calls isValidProset, which calls getParity,
+    // which uses global cards var
+
+    // deselect all cards 
+    for (let i = 0; i < cardDivs.length; i++) {
+        let thisCardDiv = cardDivs[i];
+
+        if (thisCardDiv.classList.contains("selected")) {
+            thisCardDiv.classList.remove("selected");
+        }
+    }
+
+    // select all cards in answer
     for (let i = 0; i < answer.length; i++) {
         // get the card div at index answer[i]
+        let thisCardDiv = cardDivs[answer[i]];
+        console.log(cardDivs);
 
         // select it
+        if (!thisCardDiv.classList.contains("selected")) {
+            thisCardDiv.classList.add("selected");
+        }
     }
+    selected = answer;
 }
 
-function getAProset(cards) {
+/*
+* Returns the indexes of a valid proset on the board, 
+* given the current cards. If no valid proset, returns []
+*
+* 
+*/
+function getAProset() {
     // check increasingly large combinations of cards until 1 is a proset
+    let idxs = [0, 1, 2, 3, 4, 5, 6];
+    for (let i = 0; i < numCards; i++) {
+        let combos = getCombinations(idxs, i);
 
+        for (let j = 0; j < combos.length; j++) {
+            combo = Array.from(combos[j]);
+            let result = isValidProset(combo);
+            if (result) {
+                console.log(`Solution found ${combo}`);
+                return combo;
+            }
+        }
+    }
+    return [];
+}
+
+function getCombinations(array, amt) {
+    const arr = Array.from(array), n = arr.length;
+
+    let combos = [];
+    if (amt <= 0 || amt > n) {
+        return combos;
+    }
+    // create amt number of loops
+    combos = combinationsHelper(arr, amt, "", []);
+    return combos;
+}
+
+function combinationsHelper(array, amt, baseStr, combos) {
+    if (baseStr.length === amt) {
+        combos.push(baseStr);
+        return;
+    }
+
+    for (let i = 0; i < array.length; i++) {
+        let newStr = baseStr + array[i];
+        let newarr = array.toSpliced(i, 1);
+        combinationsHelper(newarr, amt, newStr, combos);
+    }
+    return combos
 }
 
 guideToggle.addEventListener(("click"), () => {
