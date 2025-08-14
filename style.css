@@ -29,7 +29,7 @@ button {
 }
 
 .selected {
-    background-color: gray;
+    background-color: rgb(158, 158, 158);
 }
 
 .dot-bar {
@@ -44,6 +44,7 @@ button {
 .dot {
     aspect-ratio: 1;
     height: 25%;
+    border: 0.1em solid black;
     border-radius: 50%;
     display: inline-block;
     padding: 10%;
@@ -78,10 +79,12 @@ button {
 
 .clear {
     background-color: white;
+    border-color: white;
 }
 
 .selected .clear {
-    background-color: gray;
+    border-color: rgb(158, 158, 158);
+    background-color: rgb(158, 158, 158);
 }
 
 #footer {

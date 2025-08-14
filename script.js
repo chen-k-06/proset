@@ -1,8 +1,10 @@
 let cards = [];
 let cardDivs = [];
 let selected = new Set();
+let score = 0;
 const feedbackDiv = document.getElementById("feedback");
 const submitButton = document.getElementById("submit");
+const scoreTracker = document.getElementById("score-value");
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -27,24 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
-* Generates a random binary array representing the presence or absence of dots.
-*
-* The array length is determined by the global `numDots` variable. 
-* A value of 0 means no dot at that position, and a value of 1 means a dot is present.
-*
-* @returns {number[]} An array of 0s and 1s of length `numDots`.
-*/
-function generateRandomCard() {
-    let card = [];
-    for (let i = 0; i < numDots; i++) {
-        let num = Math.floor(Math.random() * 2); // generates either 0 or 1
-        card.push(num);
-    }
-    console.log(`Random card ${card} generated`)
-    return card;
-}
-
-/**
  * Populates the global `cards` array with `numCards` random binary arrays.
  *
  * Each generated card is an array of length `numDots`, containing 0s and 1s:
@@ -61,10 +45,6 @@ function generateRandomCard() {
 function generateInitalCards() {
     for (let i = 0; i < numCards; i++) {
         let card = generateRandomCard();
-        // if card in cards, try again
-        while (cardsOverlap(cards, card) == true) {
-            card = generateRandomCard();
-        }
         cards.push(card);
     }
     console.log(`Inital cards:`);
@@ -73,38 +53,64 @@ function generateInitalCards() {
 
     // create new divs for new cards
     for (let i = 0; i < numCards; i++) {
-        let newCard = document.createElement("div");
-        newCard.classList.add("card");
-
-        // color the dots
-        for (let j = 0; j < numDots / 2; j++) {
-            let newDotBar = document.createElement("div");
-            newDotBar.classList.add("dot-bar");
-            newCard.appendChild(newDotBar);
-
-            for (let k = 0; k < 2; k++) {
-                let newDot = document.createElement("div");
-                newDot.classList.add("dot");
-
-                if (k == 0) {
-                    newDot.classList.add("left-dot");
-                }
-                else {
-                    newDot.classList.add("right-dot");
-                }
-                if (cards[i][j * 2 + k] == 1) {
-                    newDot.classList.add(colors[j * 2 + k]);
-                }
-                else {
-                    newDot.classList.add("clear");
-                }
-                newDotBar.appendChild(newDot);
-            }
-        }
-        let parentElement = document.getElementById("card-container");
-        parentElement.appendChild(newCard);
-        cardDivs.push(newCard);
+        createNewCardDiv(i);
     }
+}
+
+/**
+* Generates a random binary array representing the presence or absence of dots.
+* Guarentees the array is not already present in global var `cards`
+*
+* The array length is determined by the global `numDots` variable. 
+* A value of 0 means no dot at that position, and a value of 1 means a dot is present.
+*
+* @returns {number[]} An array of 0s and 1s of length `numDots`.
+*/
+function generateRandomCard() {
+    let card = [];
+    do {
+        card = [];
+        for (let i = 0; i < numDots; i++) {
+            let num = Math.floor(Math.random() * 2); // generates either 0 or 1
+            card.push(num);
+        }
+    }
+    while (cardsOverlap(cards, card) == true);
+    console.log(`Random card ${card} generated`)
+    return card;
+}
+
+function createNewCardDiv(index) {
+    let newCard = document.createElement("div");
+    newCard.classList.add("card");
+
+    // color the dots
+    for (let j = 0; j < numDots / 2; j++) {
+        let newDotBar = document.createElement("div");
+        newDotBar.classList.add("dot-bar");
+        newCard.appendChild(newDotBar);
+
+        for (let k = 0; k < 2; k++) {
+            let newDot = document.createElement("div");
+            newDot.classList.add("dot");
+
+            if (k == 0) {
+                newDot.classList.add("left-dot");
+            }
+            else {
+                newDot.classList.add("right-dot");
+            }
+            if (cards[index][j * 2 + k] == 1) {
+                newDot.classList.add(colors[j * 2 + k]);
+            }
+            else {
+                newDot.classList.add("clear");
+            }
+            newDotBar.appendChild(newDot);
+        }
+    }
+    let parentElement = document.getElementById("card-container");
+    parentElement.appendChild(newCard);
 }
 
 function cardsOverlap(a, b) {
@@ -135,33 +141,48 @@ submitButton.addEventListener(("click"), () => {
 
 function checkProset() {
     let this_proset = Array.from(selected);
-    console.log("Selected proset: ", this_proset);
+    console.log(`Selected proset: ${this_proset}`);
     let isProset = isValidProset(this_proset);
     console.log("Result: ", isProset);
     if (isProset) {
-        feedbackDiv.textContent = "Correct!";
+        scoreTracker.textContent =
+            feedbackDiv.textContent = "Correct!";
+        // remove the selected cards and add new ones
+        updateCards(this_proset);
     }
     else {
         feedbackDiv.textContent = "Try again :(";
     }
 }
 
-/*
-*
-* For each card in a potential proset,
-* sums the number of times each dot is present. 
-* If any dot is present an odd number of times, returns false. 
-* Otherwise, returns true.
-* 
-* 
-* 
-*/
+/**
+ * Checks whether the selected cards form a valid Proset.
+ *
+ * A Proset is a non-empty subset of cards such that, for each dot/color position,
+ * the total number of present dots across the selection is even (parity ≡ 0 mod 2).
+ *
+ * @param {number[]} proset - Indices of selected cards in the global `cards` array.
+ * @returns {boolean} True if every dot/color has even parity; otherwise, false.
+ *
+ * @example
+ * // Suppose cards = [
+ * //   [1,0,1,0,0,0],
+ * //   [1,1,0,0,0,0],
+ * //   [0,1,1,0,0,0]
+ * // ];
+ * // Each color appears 0 or 2 times across indices [0,1,2]:
+ * isValidProset([0, 1, 2]); // → true
+ *
+ * // Empty selection is not a Proset:
+ * isValidProset([]); // → false
+ */
 function isValidProset(proset) {
+    if (!proset || proset.length === 0) return false;
     let counts = Array(numDots).fill(0);
     // sum all dots across all cards
     for (let i = 0; i < proset.length; i++) {
-        let this_card = proset[i];
-
+        let this_card = cards[proset[i]];
+        console.log(`this card is ${this_card}`)
         // j is the color -> index in counts
         for (let j = 0; j < numDots; j++) {
             if (this_card[j] == 1) {
@@ -181,8 +202,43 @@ function giveHint() {
 
 }
 
-function updateCards() {
+function updateCards(previous) {
+    // update the previous cards with new parity arrays
+    for (let i = 0; i < previous.length; i++) {
+        let card = generateRandomCard();
+        cards[previous[i]] = card;
+    }
+
+    // creates new cards
+    for (let index in previous) {
+        createNewCardDiv(index);
+    }
+
+    selectedCardDivs = Array.from(document.querySelectorAll(".selected"));
+    // remove old cards
+    // to do: preserve order of old cards
+    for (let i = 0; i < selectedCardDivs.length; i++) {
+        selectedCardDivs[i].remove();
+    }
+    selected = [];
+
+    console.log(`Updated cards array: ${cards}`)
     cardDivs = document.querySelectorAll(".card");
+
+    // re install listener
+    cardDivs.forEach((card, index) => {
+        card.addEventListener("click", () => {
+            console.log(index + ' card clicked');
+            if (card.classList.contains("selected")) {
+                card.classList.remove("selected");
+                selected.delete(index);
+            }
+            else {
+                card.classList.add("selected");
+                selected.add(index);
+            }
+        });
+    });
 }
 
 function showHelper() {
