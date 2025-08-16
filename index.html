@@ -14,7 +14,12 @@
     <p>Select an improper subset of cards such that each color dot is represented an even number of times. Earn more
         points for larger subsets.</p>
 
-    <div id="card-container"></div>
+    <div id="main-container">
+        <div id="card-container"></div>
+        <div id="guide-card-container" class="hidden">
+            <div class="card hidden" id="helper-card"></div>
+        </div>
+    </div>
 
     <div id="footer">
         <button id="submit">Submit</button>
@@ -26,7 +31,6 @@
         <p id="score-value">0</p>
         <div id="feedback"></div>
     </div>
-    <div class="card hidden" id="helper-card"></div>
 
     <script src="script.js"></script>
 </body>

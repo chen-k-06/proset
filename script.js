@@ -9,6 +9,7 @@ const submitButton = document.getElementById("submit");
 const scoreTracker = document.getElementById("score-value");
 const cardContainer = document.getElementById("card-container");
 const guideToggle = document.getElementById("helper");
+const guideDiv = document.getElementById("guide-card-container");
 const cheatButton = document.getElementById("hint");
 const numDots = 6;
 const numCards = 7;
@@ -379,11 +380,13 @@ guideToggle.addEventListener(("click"), () => {
     if (guideToggleValue) {
         console.log("Guide card actived")
         helperCard.classList.remove("hidden");
+        guideDiv.classList.remove("hidden");
         updateHelper(selected);
     }
     else {
         console.log("Guide card deactivated")
         helperCard.classList.add("hidden");
+        guideDiv.classList.add("hidden");
     }
 });
 
