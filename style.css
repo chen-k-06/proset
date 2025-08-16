@@ -160,4 +160,5 @@ button:active {
 #feedback {
     margin-bottom: 0;
     margin-left: 0.8em;
+    color: red;
 }
