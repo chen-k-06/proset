@@ -1,5 +1,5 @@
 body {
-    margin: 15px;
+    margin: 25px;
     background-color: white;
     font-family: Georgia, "Times New Roman", Times, serif;
 }
@@ -31,6 +31,7 @@ button:active {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    margin: auto;
     margin-bottom: 20px;
 }
 

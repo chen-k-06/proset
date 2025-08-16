@@ -71,7 +71,6 @@ function generateInitalCards() {
     console.log(`Inital cards:`);
     console.table(cards);
     console.log(JSON.stringify(cards));
-
     // create new divs for new cards
     for (let i = 0; i < numCards; i++) {
         createNewCardDiv(i);
