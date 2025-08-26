@@ -11,6 +11,7 @@ const cardContainer = document.getElementById("card-container");
 const guideToggle = document.getElementById("helper");
 const guideDiv = document.getElementById("guide-card-container");
 const cheatButton = document.getElementById("hint");
+const deselectButton = document.getElementById("deselect");
 const numDots = 6;
 const numCards = 7;
 const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -291,15 +292,7 @@ function displaySolution() {
     // which uses global cards var
 
     // deselect all cards 
-    for (let i = 0; i < cardDivs.length; i++) {
-        let thisCardDiv = cardDivs[i];
-
-        if (thisCardDiv.classList.contains("selected")) {
-            thisCardDiv.classList.remove("selected");
-        }
-    }
-
-    selected.clear();
+    deselectAll();
 
     // select all cards in answer
     for (let i = 0; i < answer.length; i++) {
@@ -419,4 +412,34 @@ function updateHelper(selected) {
             newDotBar.appendChild(newDot);
         }
     }
+}
+
+deselectButton.addEventListener(("click"), () => {
+    deselectAll();
+});
+
+/**
+ * Clears all current card selections in both the DOM and game state.
+ *
+ * Iterates over all `.card` elements in `cardDivs` and removes the
+ * `"selected"` CSS class if present. Also empties the global `selected` Set
+ * so no indices remain marked as chosen.
+ *
+ * Relies on globals:
+ * - `cardDivs` (NodeList of card elements)
+ * - `selected` (Set of selected indices)
+ *
+ * Side effects: Mutates DOM by updating classes, mutates `selected` Set.
+ * @returns {void}
+ */
+function deselectAll() {
+    for (let i = 0; i < cardDivs.length; i++) {
+        let thisCardDiv = cardDivs[i];
+
+        if (thisCardDiv.classList.contains("selected")) {
+            thisCardDiv.classList.remove("selected");
+        }
+    }
+
+    selected.clear();
 }
