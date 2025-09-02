@@ -442,4 +442,5 @@ function deselectAll() {
     }
 
     selected.clear();
+    updateHelper(selected);
 }
